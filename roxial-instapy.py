@@ -19,13 +19,31 @@ cnx = mysql.connector.connect(user=os.getenv("DB_USERNAME"),
 
 cursor = cnx.cursor()
 
-query = ("SELECT id, username, password FROM configurations WHERE id = 1")
+query = """SELECT id,username,password,potency_ratio,max_followers,max_following,min_followers,min_following,
+            do_comment,comment_percentage,do_follow,follow_percentage,follow_times,set_user_interact,
+            interact_randomize,interact_percentage
+          FROM configurations WHERE id = 1"""
 
 cursor.execute(query)
 
-for (id, username, password) in cursor:
+for (id,username,password,potency_ratio,max_followers,max_following,min_followers,min_following,
+            do_comment,comment_percentage,do_follow,follow_percentage,follow_times,set_user_interact,
+            interact_randomize,interact_percentage) in cursor:
     insta_username = username
     insta_password = password
+    potency_ratio = potency_ratio 
+    max_followers = max_followers 
+    max_following = max_following 
+    min_followers = min_followers 
+    min_following = min_following 
+    do_comment = do_comment 
+    comment_percentage = comment_percentage 
+    do_follow = do_follow 
+    follow_percentage = follow_percentage 
+    follow_times = follow_times 
+    set_user_interact = set_user_interact 
+    interact_randomize = interact_randomize 
+    interact_percentage = interact_percentage 
 
 cursor.close()
 cnx.close()
