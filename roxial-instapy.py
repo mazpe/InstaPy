@@ -20,14 +20,14 @@ cnx = mysql.connector.connect(user=os.getenv("DB_USERNAME"),
 cursor = cnx.cursor()
 
 query = """SELECT id,username,password,potency_ratio,max_followers,max_following,min_followers,min_following,
-            do_comment,comment_percentage,do_follow,follow_percentage,follow_times,set_user_interact,
+            set_do_comment,set_do_comment_percentage,set_do_follow,set_do_follow_percentage,set_do_follow_times,set_user_interact,
             interact_randomize,interact_percentage
           FROM configurations WHERE id = 1"""
 
 cursor.execute(query)
 
 for (id,username,password,potency_ratio,max_followers,max_following,min_followers,min_following,
-            do_comment,comment_percentage,do_follow,follow_percentage,follow_times,set_user_interact,
+            set_do_comment,set_do_comment_percentage,set_do_follow,set_do_follow_percentage,set_do_follow_times,set_user_interact,
             interact_randomize,interact_percentage) in cursor:
     insta_username = username
     insta_password = password
@@ -36,17 +36,21 @@ for (id,username,password,potency_ratio,max_followers,max_following,min_follower
     max_following = max_following 
     min_followers = min_followers 
     min_following = min_following 
-    do_comment = do_comment 
-    comment_percentage = comment_percentage 
-    do_follow = do_follow 
-    follow_percentage = follow_percentage 
-    follow_times = follow_times 
+    set_do_comment = set_do_comment 
+    set_do_comment_percentage = set_do_comment_percentage 
+    set_do_follow = set_do_follow 
+    set_do_follow_percentage = set_do_follow_percentage 
+    set_do_follow_times = set_do_follow_times 
     set_user_interact = set_user_interact 
     interact_randomize = interact_randomize 
     interact_percentage = interact_percentage 
 
 cursor.close()
 cnx.close()
+
+
+# print(potency_ratio)
+# exit()
 
 # set headless_browser=True if you want to run InstaPy on a server
 
@@ -65,13 +69,13 @@ try:
 
     # settings
     session.set_relationship_bounds(enabled=True,
-				 potency_ratio=-1.21,
+				 potency_ratio=potency_ratio,
 				  delimit_by_numbers=True,
-				   max_followers=4590,
-				    max_following=5555,
-				     min_followers=45,
-				      min_following=77)
-    session.set_do_comment(True, percentage=70)
+				   max_followers=max_followers,
+				    max_following=max_following,
+				     min_followers=max_following,
+				      min_following=min_following)
+    session.set_do_comment(set_do_follow, percentage=set_do_follow_percentage)
     session.set_comments([  
                         '@{} Nice!',
                         '@{} Great post!',
@@ -83,7 +87,7 @@ try:
     session.set_dont_like(['pizza', 'nsfw'])
 
     # actions
-    session.set_do_follow(enabled=True, percentage=70, times=2)
+    session.set_do_follow(enabled=set_do_follow, percentage=set_do_follow_percentage, times=set_do_follow_percentage)
     session.like_by_tags(['miamikeratin','keratin','keratintreatment','botoxforhair','hairstyle','miamihairstylist','miamihairsalon','miamihairstyles'], amount=500, interact=True)
 
 except Exception as exc:
