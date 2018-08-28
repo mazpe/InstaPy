@@ -4,3 +4,4 @@ pyvirtualdisplay
 emoji
 GitPython
 python-dotenv
+mysql-connector-python
