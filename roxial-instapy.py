@@ -38,21 +38,21 @@ cursor.execute(query, { 'brand_id': brand_id })
 for (id,username,password,potency_ratio,max_followers,max_following,min_followers,min_following,
             set_do_comment,set_do_comment_percentage,set_do_follow,set_do_follow_percentage,set_do_follow_times,set_user_interact,
             interact_randomize,interact_percentage) in cursor:
-    insta_username = username
-    insta_password = password
-    potency_ratio = float(potency_ratio)
-    max_followers = int(max_followers)
-    max_following = int(max_following)
-    min_followers = int(min_followers)
-    min_following = int(min_following)
-    set_do_comment = set_do_comment 
-    set_do_comment_percentage = set_do_comment_percentage 
-    set_do_follow = set_do_follow 
-    set_do_follow_percentage = set_do_follow_percentage 
-    set_do_follow_times = set_do_follow_times 
-    set_user_interact = set_user_interact 
-    interact_randomize = interact_randomize 
-    interact_percentage = interact_percentage 
+    insta_username              = username
+    insta_password              = password
+    potency_ratio               = float(potency_ratio)
+    max_followers               = int(max_followers)
+    max_following               = int(max_following)
+    min_followers               = int(min_followers)
+    min_following               = int(min_following)
+    set_do_comment              = strtobool(set_do_comment)
+    set_do_comment_percentage   = int(set_do_comment_percentage) 
+    set_do_follow               = strtobool(set_do_follow)
+    set_do_follow_percentage    = int(set_do_follow_percentage)
+    set_do_follow_times         = int(set_do_follow_times)
+    set_user_interact           = strtobool(set_user_interact)
+    interact_randomize          = interact_randomize
+    interact_percentage         = int(interact_percentage)
 
 cursor.close()
 cnx.close()
@@ -75,7 +75,7 @@ try:
 
     # settings
     session.set_relationship_bounds(enabled=True,
-				 potency_ratio=-potency_ratio,
+				 potency_ratio=potency_ratio,
 				  delimit_by_numbers=True,
 				   max_followers=max_followers,
 				    max_following=max_following,
