@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 project_folder = os.path.expanduser('~/Code/InstaPy')  # adjust as appropriate
 load_dotenv(os.path.join(project_folder, '.env'))
 
+import sys
+from distutils.util import strtobool
+
 import time
 from tempfile import gettempdir
 
@@ -48,10 +51,6 @@ for (id,username,password,potency_ratio,max_followers,max_following,min_follower
 cursor.close()
 cnx.close()
 
-
-# print(potency_ratio)
-# exit()
-
 # set headless_browser=True if you want to run InstaPy on a server
 
 # set these in instapy/settings.py if you're locating the
@@ -61,8 +60,9 @@ cnx.close()
 
 session = InstaPy(username=insta_username,
                   password=insta_password,
-                  headless_browser=False,
-                  multi_logs=True)
+                  headless_browser=strtobool(os.getenv("HEADLESS_BROWSER")),
+                #   headless_browser=False,
+                  multi_logs=strtobool(os.getenv("MULTI_LOGS")))
 
 try:
     session.login()
