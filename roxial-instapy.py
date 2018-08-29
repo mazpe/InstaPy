@@ -30,14 +30,14 @@ cursor = cnx.cursor()
 
 query = """SELECT id,username,password,potency_ratio,max_followers,max_following,min_followers,min_following,
             set_do_comment,set_do_comment_percentage,set_do_follow,set_do_follow_percentage,set_do_follow_times,set_user_interact,
-            interact_randomize,interact_percentage
+            interact_randomize,interact_percentage,like_amount
           FROM configurations WHERE id = %(brand_id)s"""
 
 cursor.execute(query, { 'brand_id': brand_id })
 
 for (id,username,password,potency_ratio,max_followers,max_following,min_followers,min_following,
             set_do_comment,set_do_comment_percentage,set_do_follow,set_do_follow_percentage,set_do_follow_times,set_user_interact,
-            interact_randomize,interact_percentage) in cursor:
+            interact_randomize,interact_percentage,like_amount) in cursor:
     insta_username              = username
     insta_password              = password
     potency_ratio               = float(potency_ratio)
@@ -45,24 +45,31 @@ for (id,username,password,potency_ratio,max_followers,max_following,min_follower
     max_following               = int(max_following)
     min_followers               = int(min_followers)
     min_following               = int(min_following)
-    set_do_comment              = strtobool(set_do_comment)
+    set_do_comment              = bool(set_do_comment)
     set_do_comment_percentage   = int(set_do_comment_percentage) 
-    set_do_follow               = strtobool(set_do_follow)
+    set_do_follow               = bool(set_do_follow)
     set_do_follow_percentage    = int(set_do_follow_percentage)
     set_do_follow_times         = int(set_do_follow_times)
-    set_user_interact           = strtobool(set_user_interact)
-    interact_randomize          = interact_randomize
+    set_user_interact           = bool(set_user_interact)
+    interact_randomize          = bool(interact_randomize)
     interact_percentage         = int(interact_percentage)
+    like_amount                 = int(like_amount)
 
 cursor.close()
 cnx.close()
 
-# set headless_browser=True if you want to run InstaPy on a server
+comments = [  
+    '@{} Nice!',
+    '@{} Great post!',
+    '@{} Excellent post!',
+    '@{} Stunning!',
+    '@{} Great job!'
+]
 
-# set these in instapy/settings.py if you're locating the
-# library in the /usr/lib/pythonX.X/ directory:
-#   Settings.database_location = '/path/to/instapy.db'
-#   Settings.chromedriver_location = '/path/to/chromedriver'
+dont_includes = ['f4f','follow4follow','friend1', 'friend2', 'friend3']
+dont_likes = ['pizza', 'nsfw']
+
+tags = ['miamikeratin','keratin','keratintreatment','botoxforhair','hairstyle','miamihairstylist','miamihairsalon','miamihairstyles']
 
 session = InstaPy(username=insta_username,
                   password=insta_password,
@@ -79,22 +86,21 @@ try:
 				  delimit_by_numbers=True,
 				   max_followers=max_followers,
 				    max_following=max_following,
-				     min_followers=max_following,
+				     min_followers=min_following,
 				      min_following=min_following)
+
+    # comments
     session.set_do_comment(set_do_follow, percentage=set_do_follow_percentage)
-    session.set_comments([  
-                        '@{} Nice!',
-                        '@{} Great post!',
-                        '@{} Excellent post!',
-                        '@{} Stunning!',
-                        '@{} Great job!'
-    ])
-    session.set_dont_include(['f4f','follow4follow','friend1', 'friend2', 'friend3'])
-    session.set_dont_like(['pizza', 'nsfw'])
+    session.set_comments(comments)
+
+    # donts
+    session.set_dont_include(dont_includes)
+    session.set_dont_like(dont_likes)
 
     # actions
     session.set_do_follow(enabled=set_do_follow, percentage=set_do_follow_percentage, times=set_do_follow_percentage)
-    session.like_by_tags(['miamikeratin','keratin','keratintreatment','botoxforhair','hairstyle','miamihairstylist','miamihairsalon','miamihairstyles'], amount=50, interact=True)
+    session.set_user_interact(randomize=interact_randomize, percentage=interact_percentage)
+    session.like_by_tags(tags, amount=like_amount, interact=True)
 
 except Exception as exc:
     # if changes to IG layout, upload the file to help us locate the change
