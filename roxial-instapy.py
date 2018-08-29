@@ -15,6 +15,12 @@ from instapy import InstaPy
 
 import mysql.connector
 
+if len(sys.argv) != 2:
+    print "Not enough parameters"
+    exit()
+
+brand_id = sys.argv[1]
+
 cnx = mysql.connector.connect(user=os.getenv("DB_USERNAME"), 
                               password=os.getenv("DB_PASSWORD"),
                               host=os.getenv("DB_HOST"),
@@ -25,16 +31,16 @@ cursor = cnx.cursor()
 query = """SELECT id,username,password,potency_ratio,max_followers,max_following,min_followers,min_following,
             set_do_comment,set_do_comment_percentage,set_do_follow,set_do_follow_percentage,set_do_follow_times,set_user_interact,
             interact_randomize,interact_percentage
-          FROM configurations WHERE id = 1"""
+          FROM configurations WHERE id = %(brand_id)s"""
 
-cursor.execute(query)
+cursor.execute(query, { 'brand_id': brand_id })
 
 for (id,username,password,potency_ratio,max_followers,max_following,min_followers,min_following,
             set_do_comment,set_do_comment_percentage,set_do_follow,set_do_follow_percentage,set_do_follow_times,set_user_interact,
             interact_randomize,interact_percentage) in cursor:
     insta_username = username
     insta_password = password
-    potency_ratio = potency_ratio 
+    potency_ratio = float(potency_ratio)
     max_followers = max_followers 
     max_following = max_following 
     min_followers = min_followers 
@@ -69,7 +75,7 @@ try:
 
     # settings
     session.set_relationship_bounds(enabled=True,
-				 potency_ratio=potency_ratio,
+				 potency_ratio=-potency_ratio,
 				  delimit_by_numbers=True,
 				   max_followers=max_followers,
 				    max_following=max_following,
