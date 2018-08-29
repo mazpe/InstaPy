@@ -41,10 +41,10 @@ for (id,username,password,potency_ratio,max_followers,max_following,min_follower
     insta_username = username
     insta_password = password
     potency_ratio = float(potency_ratio)
-    max_followers = max_followers 
-    max_following = max_following 
-    min_followers = min_followers 
-    min_following = min_following 
+    max_followers = int(max_followers)
+    max_following = int(max_following)
+    min_followers = int(min_followers)
+    min_following = int(min_following)
     set_do_comment = set_do_comment 
     set_do_comment_percentage = set_do_comment_percentage 
     set_do_follow = set_do_follow 
@@ -94,7 +94,7 @@ try:
 
     # actions
     session.set_do_follow(enabled=set_do_follow, percentage=set_do_follow_percentage, times=set_do_follow_percentage)
-    session.like_by_tags(['miamikeratin','keratin','keratintreatment','botoxforhair','hairstyle','miamihairstylist','miamihairsalon','miamihairstyles'], amount=500, interact=True)
+    session.like_by_tags(['miamikeratin','keratin','keratintreatment','botoxforhair','hairstyle','miamihairstylist','miamihairsalon','miamihairstyles'], amount=50, interact=True)
 
 except Exception as exc:
     # if changes to IG layout, upload the file to help us locate the change
