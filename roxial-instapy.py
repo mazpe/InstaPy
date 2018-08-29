@@ -16,7 +16,7 @@ from instapy import InstaPy
 import mysql.connector
 
 if len(sys.argv) != 2:
-    print "Not enough parameters"
+    print("Not enough parameters")
     exit()
 
 brand_id = sys.argv[1]
