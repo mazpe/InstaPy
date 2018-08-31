@@ -61,7 +61,7 @@ cursor.close()
 comment_cursor = cnx.cursor()
 
 query = """SELECT comment
-          FROM comments WHERE brand_id = %(brand_id)s"""
+          FROM comments WHERE brand_id = %(brand_id)s ORDER BY RAND()"""
 
 comment_cursor.execute(query, { 'brand_id': brand_id })
 
@@ -76,7 +76,7 @@ comment_cursor.close()
 tag_cursor = cnx.cursor()
 
 query = """SELECT tag
-          FROM tags WHERE brand_id = %(brand_id)s"""
+          FROM tags WHERE brand_id = %(brand_id)s ORDER BY RAND()"""
 
 tag_cursor.execute(query, { 'brand_id': brand_id })
 
