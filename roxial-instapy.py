@@ -56,20 +56,41 @@ for (id,username,password,potency_ratio,max_followers,max_following,min_follower
     like_amount                 = int(like_amount)
 
 cursor.close()
+
+# Results with brand's comments
+comment_cursor = cnx.cursor()
+
+query = """SELECT comment
+          FROM comments WHERE brand_id = %(brand_id)s"""
+
+comment_cursor.execute(query, { 'brand_id': brand_id })
+
+results = comment_cursor.fetchall()
+
+for i in zip(*results):
+    comments = list(i)
+
+comment_cursor.close()
+
+# Results with brand's tags
+tag_cursor = cnx.cursor()
+
+query = """SELECT tag
+          FROM tags WHERE brand_id = %(brand_id)s"""
+
+tag_cursor.execute(query, { 'brand_id': brand_id })
+
+results = tag_cursor.fetchall()
+
+for i in zip(*results):
+    tags = list(i)
+
+tag_cursor.close()
+
 cnx.close()
 
-comments = [  
-    '@{} Nice!',
-    '@{} Great post!',
-    '@{} Excellent post!',
-    '@{} Stunning!',
-    '@{} Great job!'
-]
-
 dont_includes = ['f4f','follow4follow','friend1', 'friend2', 'friend3']
-dont_likes = ['pizza', 'nsfw']
-
-tags = ['miamikeratin','keratin','keratintreatment','botoxforhair','hairstyle','miamihairstylist','miamihairsalon','miamihairstyles']
+dont_likes = ['nsfw']
 
 session = InstaPy(username=insta_username,
                   password=insta_password,
@@ -81,13 +102,15 @@ try:
     session.login()
 
     # settings
-    session.set_relationship_bounds(enabled=True,
-				 potency_ratio=potency_ratio,
-				  delimit_by_numbers=True,
-				   max_followers=max_followers,
-				    max_following=max_following,
-				     min_followers=min_following,
-				      min_following=min_following)
+    session.set_relationship_bounds(
+        enabled=True,
+		potency_ratio=potency_ratio,
+		delimit_by_numbers=True,
+		max_followers=max_followers,
+		max_following=max_following,
+		min_followers=min_following,
+		min_following=min_following
+    )
 
     # comments
     session.set_do_comment(set_do_follow, percentage=set_do_follow_percentage)
@@ -100,7 +123,7 @@ try:
     # actions
     session.set_do_follow(enabled=set_do_follow, percentage=set_do_follow_percentage, times=set_do_follow_percentage)
     session.set_user_interact(randomize=interact_randomize, percentage=interact_percentage)
-    session.like_by_tags(tags, amount=like_amount, interact=True)
+    session.like_by_tags(tags, amount=like_amount)
 
 except Exception as exc:
     # if changes to IG layout, upload the file to help us locate the change
