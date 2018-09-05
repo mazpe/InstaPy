@@ -11,9 +11,10 @@ from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 
 from .time_util import sleep
-from .util import update_activity
 from .util import add_user_to_blacklist
 from .util import click_element
+from .util import is_private_profile
+from .util import update_activity
 from .util import web_adress_navigator
 from .util import get_number_of_posts
 from .util import remove_duplicated_from_list_keep_order
@@ -331,8 +332,7 @@ def get_links_for_username(browser,
     abort = True
 
     try:
-        is_private = body_elem.find_element_by_xpath(
-            '//h2[@class="_kcrwx"]')
+        is_private = is_private_profile(browser, logger)
     except:
         logger.info('Interaction begin...')
     else:
@@ -382,13 +382,14 @@ def get_links_for_username(browser,
 
 
 
-def check_link(browser, post_link, dont_like, ignore_if_contains, logger):
+def check_link(browser, post_link, dont_like, mandatory_words, ignore_if_contains, logger):
     """
     Check the given link if it is appropriate
 
     :param browser: The selenium webdriver instance
     :param link:
     :param dont_like: hashtags of inappropriate phrases
+    :param mandatory_words: words of appropriate phrases
     :param ignore_if_contains:
 
     :param logger: the logger instance
@@ -475,6 +476,9 @@ def check_link(browser, post_link, dont_like, ignore_if_contains, logger):
     logger.info('Link: {}'.format(post_link.encode('utf-8')))
     logger.info('Description: {}'.format(image_text.encode('utf-8')))
 
+    if mandatory_words :
+        if not all((word in image_text for word in mandatory_words)) :
+            return True, user_name, is_video, 'Mandatory words not fulfilled', "Not mandatory likes"
 
     if any((word in image_text for word in ignore_if_contains)):
         return False, user_name, is_video, 'None', "Pass"

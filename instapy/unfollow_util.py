@@ -28,7 +28,7 @@ from .print_log_writer import log_record_all_unfollowed
 from .relationship_tools import get_followers
 from .relationship_tools import get_following
 from .relationship_tools import get_nonfollowers
-from .database_engine import get_db
+from .database_engine import get_database
 
 
 
@@ -466,7 +466,7 @@ def unfollow(browser,
                     continue
 
         except Exception as exc:
-            logger.error("Unfollow loop error:\n\n{}\n\n".format(exc.encode('utf-8')))
+            logger.error("Unfollow loop error:\n\n{}\n\n".format(str(exc).encode('utf-8')))
 
     else:
         logger.info("Please select a proper unfollow method!  ~leaving unfollow activity\n")
@@ -956,7 +956,7 @@ def dump_follow_restriction(profile_name, logger, logfolder):
 
     try:
         # get a DB and start a connection
-        db, id = get_db()
+        db, id = get_database()
         conn = sqlite3.connect(db)
 
         with conn:
@@ -976,7 +976,7 @@ def dump_follow_restriction(profile_name, logger, logfolder):
                 current_data = {}
 
             # pack the new data
-            follow_data = dict(user_data[1:3] for user_data in data or [])
+            follow_data = {user_data[1]: user_data[2] for user_data in data or []}
             current_data[profile_name] = follow_data
 
             # dump the fresh follow data to a local human readable JSON
@@ -998,7 +998,7 @@ def follow_restriction(operation, username, limit, logger):
 
     try:
         # get a DB and start a connection
-        db, id = get_db()
+        db, id = get_database()
         conn = sqlite3.connect(db)
 
         with conn:
